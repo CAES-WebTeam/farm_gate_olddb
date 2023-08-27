@@ -15,8 +15,6 @@ namespace farmGate.Shared.Models
         [MaxLength(255)]
         public string? Name { get; set; }
 
-        [Required]
-        public double Value { get; set; }  // This field could be used to store the entered value
 
         [ForeignKey("Category")]
         public int CategoryId { get; set; }  // Foreign key

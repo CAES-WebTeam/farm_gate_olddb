@@ -20,6 +20,13 @@ namespace farmGate.Client.Services
             var commodities = await _httpClient.GetFromJsonAsync<List<Commodity>>("api/Commodity");
             return commodities ?? new List<Commodity>();
         }
+
+        public async Task<List<Commodity>> GetCommoditiesByCategoryIdAsync(int categoryId)
+        {
+            var commodities = await _httpClient.GetFromJsonAsync<List<Commodity>>($"api/Commodity/ByCategory/{categoryId}");
+            return commodities ?? new List<Commodity>();
+        }
+
         public async Task<Commodity> AddCommodityAsync(Commodity newCommodity)
         {
             var response = await _httpClient.PostAsJsonAsync("api/Commodity", newCommodity);
@@ -33,6 +40,5 @@ namespace farmGate.Client.Services
                 return null;
             }
         }
-
     }
 }

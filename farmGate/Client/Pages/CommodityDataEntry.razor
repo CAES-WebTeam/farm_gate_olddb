@@ -14,7 +14,6 @@
             <thead>
                 <tr>
                     <th>Category</th>
-                
                 </tr>
             </thead>
             <tbody>
@@ -22,21 +21,24 @@
                 {
                     <tr>
                         <td>
-
-                            <a href="@($"/commodity-data-entry/{category.Id}")">@category.Name</a>
-
+                            @if (category.Name == "Fruits and Nuts")
+                            {
+                                <a href="/fruits-and-nuts">@category.Name</a>
+                            }
+                            else
+                            {
+                                <a href="@($"/commodity-data-entry/{category.Id}")">@category.Name</a>
+                            }
                         </td>
-
                     </tr>
                 }
             </tbody>
         </table>
-      
     </form>
 }
 else
 {
-    <p>Loading data or an error occurred...</p>
+    <p>Loading data ...</p>
 }
 
 @code {

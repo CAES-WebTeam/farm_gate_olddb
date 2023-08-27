@@ -1,9 +1,8 @@
-﻿// Server/Services/CommodityService.cs
-
-using farmGate.Server.Data;
+﻿using farmGate.Server.Data;
 using farmGate.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace farmGate.Server.Services
@@ -20,6 +19,11 @@ namespace farmGate.Server.Services
         public async Task<List<Commodity>> GetAllCommoditiesAsync()
         {
             return await _context.Commodities.ToListAsync();
+        }
+
+        public async Task<List<Commodity>> GetCommoditiesByCategoryIdAsync(int categoryId)
+        {
+            return await _context.Commodities.Where(c => c.CategoryId == categoryId).ToListAsync();
         }
 
         public async Task<Commodity> AddCommodityAsync(Commodity commodity)

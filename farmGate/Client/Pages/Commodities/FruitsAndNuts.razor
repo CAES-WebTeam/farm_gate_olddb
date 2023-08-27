@@ -1,0 +1,72 @@
+﻿@page "/fruits-and-nuts"
+@using farmGate.Client.Services
+@inject CommodityService commodityService
+
+<h1>Fruits and Nuts Data Entry</h1>
+
+<div class="container mt-4">
+    @if (Commodities == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <form @onsubmit="SaveData">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Commodity</th>
+                        <th scope="col">Acres</th>
+                        <th scope="col">Last Year's Acres</th>
+                        <th scope="col">Avg. Yield (lb/bushels)</th>
+                        <th scope="col">Price per lb</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var commodity in Commodities)
+                    {
+                        <tr>
+                            <td>@commodity.Name</td>
+                            <td><input type="number" @bind="commodity.Acres"></td>
+                            <td><input type="number" @bind="commodity.LastYearAcres"></td>
+                            <td><input type="number" @bind="commodity.AvgYield"></td>
+                            <td><input type="number" @bind="commodity.PricePerLb"></td>
+                            <td><input type="number" @bind="commodity.Total" readonly></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    }
+</div>
+
+@code {
+    public class CommodityData
+    {
+        public string? Name { get; set; }
+        public double Acres { get; set; }
+        public double LastYearAcres { get; set; }
+        public double AvgYield { get; set; }
+        public double PricePerLb { get; set; }
+        public double Total { get; set; }
+    }
+
+    private List<CommodityData> Commodities;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var commodityList = await commodityService.GetCommoditiesByCategoryIdAsync(2);
+        Commodities = commodityList.Select(c => new CommodityData
+            {
+                Name = c.Name,
+                // Add other properties if needed
+            }).ToList();
+    }
+
+    private void SaveData()
+    {
+        // Save the data to the database
+    }
+}

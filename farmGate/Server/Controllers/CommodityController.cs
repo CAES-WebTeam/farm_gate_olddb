@@ -22,6 +22,12 @@ namespace farmGate.Server.Controllers
             return Ok(await _commodityService.GetAllCommoditiesAsync());
         }
 
+        [HttpGet("ByCategory/{categoryId}")]
+        public async Task<IActionResult> GetByCategory(int categoryId)
+        {
+            return Ok(await _commodityService.GetCommoditiesByCategoryIdAsync(categoryId));
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddCommodity([FromBody] Commodity newCommodity)
         {
