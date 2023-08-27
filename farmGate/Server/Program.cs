@@ -1,4 +1,5 @@
 using farmGate.Server.Data;
+using farmGate.Server.Services;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+builder.Services.AddScoped<CountyService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<CommodityService>();
+
 
 // Add DbContext
 builder.Services.AddDbContext<MyDbContext>(options =>

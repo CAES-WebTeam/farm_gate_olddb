@@ -1,0 +1,64 @@
+﻿@page "/commodity-data-entry"
+@using farmGate.Client.Services
+@using farmGate.Shared.Models
+
+@inject CountyService countyService
+@inject CategoryService categoryService
+
+@if (currentCounty != null && categories != null)
+{
+    <h3>Commodity Data Entry for @currentCounty.Name</h3>
+
+    <form @onsubmit="SubmitForm">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in categories)
+                {
+                    <tr>
+                        <td>
+
+                            <a href="@($"/commodity-data-entry/{category.Id}")">@category.Name</a>
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+      
+    </form>
+}
+else
+{
+    <p>Loading data or an error occurred...</p>
+}
+
+@code {
+    private County currentCounty;
+    private List<Category> categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            currentCounty = await countyService.GetCountyForLoggedInUser();
+            categories = await categoryService.GetCategoriesAsync();
+        }
+        catch (Exception ex)
+        {
+            // Log or show an error message
+        }
+    }
+
+    private async Task SubmitForm()
+    {
+        // Here, you would call a service method to submit the data
+        // This should include the County ID and the entered values for each category
+    }
+}
