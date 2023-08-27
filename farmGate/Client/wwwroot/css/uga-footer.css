@@ -6,6 +6,19 @@
  */
 @import url("//fonts.googleapis.com/css?family=Merriweather+Sans:300|Merriweather:300");
 
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+
 .ugafooter__logo, .ugafooter__address, .ugafooter__links, .ugafooter__social {
   position: relative;
   width: 100%;
@@ -29,18 +42,25 @@
 
 body {
   margin: 0; }
+.page {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: 100vh;
+}
 
 .ugafooter {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  padding: 48px 0;
-  border-width: 4px 0 0;
-  border-style: solid;
-  border-color: #BA0C2F;
-  background: url("../img/background-arch.jpg") #000000 center center no-repeat;
-  background-size: cover;
-  font-size: 16px;
-  font-family: "Merriweather", Georgia, "Times New Roman", Times, serif; }
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top: auto;
+    padding: 48px 0;
+    border-width: 4px 0 0;
+    border-style: solid;
+    border-color: #BA0C2F;
+    background: url("../img/background-arch.jpg") #000000 center center no-repeat;
+    background-size: cover;
+    font-size: 16px;
+    font-family: "Merriweather", Georgia, "Times New Roman", Times, serif;
+}
   .ugafooter--border-white {
     border-color: #FFFFFF; }
   .ugafooter--border-grey {

@@ -1,11 +1,42 @@
 ﻿@page "/"
 
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">FarmGate</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <NavLink class="nav-link" href="/commodity-data-entry">Survey</NavLink>
+            </li>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/admin/admin">Admin</NavLink>
+            </li>
+        </ul>
+    </div>
+</nav>
+
 <h1>Welcome to FarmGate!</h1>
 
-<ul>
- <li> <NavLink href="/commodity-data-entry">Go to Commodity Data Entry</NavLink></li>
-
-<li><NavLink href="/admin/admin">Go to Admin</NavLink></li>
-
-
-</ul>
+<div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active" data-bs-interval="10000">
+            <img src="img\fresh-fruit-farmers-market.jpg" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item" data-bs-interval="2000">
+            <img src="img\GAC_IceCream_4-1024x683.jpg" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <img src="img\GAC_IceCream_4-1024x683.jpg" class="d-block w-100" alt="...">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
