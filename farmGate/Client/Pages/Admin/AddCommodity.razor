@@ -1,0 +1,168 @@
+﻿@page "/admin/AddCommodity"
+@using farmGate.Shared.Models
+@using farmGate.Client.Services
+@inject CommodityService commodityService
+@inject CategoryService categoryService
+@inject IJSRuntime JSRuntime
+
+<h1>Admin: Commodities</h1>
+
+<!-- Form to add new commodity -->
+<form @onsubmit="AddCommodities">
+    <div class="form-group">
+        <label for="commodityName">Enter commodity name:</label>
+        <input id="commodityName" class="form-control" @bind="newCommodity.Name" placeholder="Commodity name" />
+    </div>
+    <div class="form-group">
+        <label for="categorySelect">Please choose category of commodity (required):</label>
+        <select id="categorySelect" class="form-control" @bind="selectedCategoryId">
+            <option value="">Select Category</option>
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+
+<h2>Current Commodities</h2>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Commodity</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the commodity <strong>@modalCommodityName</strong> from category <strong>@modalCategoryName</strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" @onclick="() => DeleteCommodity(modalCommodityId)">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="d-flex">
+                @foreach (var category in categories)
+                {
+                    <th class="col">
+                        <button class="btn btn-link" @onclick="() => ToggleCategory(category.Id)">
+                            <i class="@(isExpanded[category.Id] ? "bi bi-arrows-collapse" : "bi bi-arrows-expand")"></i>
+                            @category.Name
+                        </button>
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="d-flex">
+                @foreach (var category in categories)
+                {
+                    <td class="col">
+                        @if (isExpanded[category.Id])
+                        {
+                            <ul>
+                                @foreach (var commodity in commodities.Where(c => c.CategoryId == category.Id))
+                                {
+                                    <li>
+                                        @commodity.Name
+                                        <!-- Add a Delete button next to each commodity -->
+                                        <button class="btn btn-link text-danger" @onclick="() => PromptDeleteCommodity(commodity.Id)">
+                                            Delete
+                                        </button>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>
+@code {
+    private List<Commodity> commodities;
+    private List<Category> categories;
+    private Commodity newCommodity = new Commodity();
+    private int selectedCategoryId;
+    private Dictionary<int, bool> isExpanded = new Dictionary<int, bool>();
+    private string modalCommodityName = "";
+    private string modalCategoryName = "";
+    private int modalCommodityId = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        commodities = new List<Commodity>(); // Initialize as empty
+        categories = new List<Category>();   // Initialize as empty
+
+        Console.WriteLine("Fetching commodities...");
+        commodities = await commodityService.GetAllCommoditiesAsync();
+        Console.WriteLine($"Fetched {commodities.Count} commodities.");
+
+        Console.WriteLine("Fetching categories...");
+        categories = await categoryService.GetCategoriesAsync();
+        Console.WriteLine($"Fetched {categories.Count} categories.");
+
+        // Initialize the isExpanded dictionary
+        foreach (var category in categories)
+        {
+            isExpanded[category.Id] = true;
+        }
+    }
+
+    private void ToggleCategory(int categoryId)
+    {
+        isExpanded[categoryId] = !isExpanded[categoryId];
+    }
+
+    private async Task AddCommodities()
+    {
+        newCommodity.CategoryId = selectedCategoryId;
+        var addedCommodity = await commodityService.AddCommodityAsync(newCommodity);
+        commodities.Add(addedCommodity);
+        newCommodity = new Commodity(); // Reset the form
+    }
+
+
+    private async Task PromptDeleteCommodity(int commodityId)
+    {
+        var commodity = commodities.FirstOrDefault(c => c.Id == commodityId);
+        if (commodity != null)
+        {
+            modalCommodityName = commodity.Name;
+            modalCommodityId = commodity.Id;
+            modalCategoryName = categories.FirstOrDefault(cat => cat.Id == commodity.CategoryId)?.Name ?? "Unknown";
+
+            // Show the modal
+            await JSRuntime.InvokeVoidAsync("showModal", "#deleteModal");
+        }
+    }
+
+    private async Task DeleteCommodity(int commodityId)
+    {
+        // Call your service method to delete the commodity from the database.
+        var success = await commodityService.DeleteCommodityAsync(commodityId);
+
+        if (success)
+        {
+            // Remove the commodity from the local list.
+            commodities.RemoveAll(c => c.Id == commodityId);
+
+            // Hide the modal
+            await JSRuntime.InvokeVoidAsync("hideModal", "#deleteModal");
+        }
+        else
+        {
+            // Handle the error (log it, show an error message, etc.)
+        }
+    }
+}

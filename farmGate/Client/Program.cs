@@ -8,6 +8,8 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<CountyService>();
 builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<UnitService>();
+
 
 
 

@@ -31,5 +31,18 @@ namespace farmGate.Server.Services
             await _context.SaveChangesAsync();
             return commodity;
         }
+
+        public async Task<bool> DeleteCommodityAsync(int commodityId)
+        {
+            var commodity = await _context.Commodities.FindAsync(commodityId);
+            if (commodity == null)
+            {
+                return false;
+            }
+
+            _context.Commodities.Remove(commodity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

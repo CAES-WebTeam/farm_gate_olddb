@@ -40,5 +40,13 @@ namespace farmGate.Client.Services
                 return null;
             }
         }
+
+        // farmGate.Client.Services.CommodityService.cs
+        public async Task<bool> DeleteCommodityAsync(int commodityId)
+        {
+            var response = await _httpClient.DeleteAsync($"api/Commodity/{commodityId}");
+            return response.IsSuccessStatusCode;
+        }
+
     }
 }

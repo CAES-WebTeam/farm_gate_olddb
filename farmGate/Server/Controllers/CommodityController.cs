@@ -42,5 +42,19 @@ namespace farmGate.Server.Controllers
                 return BadRequest("Could not add commodity");
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCommodity(int id)
+        {
+            bool success = await _commodityService.DeleteCommodityAsync(id);
+            if (success)
+            {
+                return Ok();  // 200 OK
+            }
+            else
+            {
+                return NotFound();  // 404 Not Found
+            }
+        }
     }
 }
