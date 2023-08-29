@@ -1,6 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using farmGate.Shared.Models;
 using Microsoft.EntityFrameworkCore;
-using farmGate.Shared.Models;
 
 namespace farmGate.Server.Data
 {
@@ -15,5 +14,8 @@ namespace farmGate.Server.Data
         public DbSet<Category> Categories { get; set; }
         // Add other DbSet properties for other tables here
         public DbSet<Commodity> Commodities { get; set; }
+
+        public DbSet<Unit> Units { get; set; }
+
     }
 }

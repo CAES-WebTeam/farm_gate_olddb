@@ -20,6 +20,7 @@
                         <th scope="col">Last Year's Acres</th>
                         <th scope="col">Avg. Yield (lb/bushels)</th>
                         <th scope="col">Price per lb</th>
+                        <th scope="col">Price per bushel</th>
                         <th scope="col">Total</th>
                     </tr>
                 </thead>
@@ -28,10 +29,26 @@
                     {
                         <tr>
                             <td>@commodity.Name</td>
-                            <td><input type="number" @bind="commodity.Acres"></td>
-                            <td><input type="number" @bind="commodity.LastYearAcres"></td>
-                            <td><input type="number" @bind="commodity.AvgYield"></td>
-                            <td><input type="number" @bind="commodity.PricePerLb"></td>
+                            <td><input type="number" @bind="commodity.Acres" @oninput="() => commodity.CalculateTotal()"></td>
+                            <td><input type="number" @bind="commodity.LastYearAcres" @oninput="() => commodity.CalculateTotal()"></td>
+                            <td><input type="number" @bind="commodity.AvgYield" @oninput="() => commodity.CalculateTotal()"></td>
+
+                            @if (commodity.UnitID == 1)
+                            {
+                                <td><input type="number" @bind="commodity.PricePerLb" @oninput="() => commodity.CalculateTotal()"></td>
+                                <td></td>
+                            }
+                            else if (commodity.UnitID == 2)
+                            {
+                                <td></td>
+                                <td><input type="number" @bind="commodity.PricePerBu" @oninput="() => commodity.CalculateTotal()"></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td></td>
+                            }
+
                             <td><input type="number" @bind="commodity.Total" readonly></td>
                         </tr>
                     }
@@ -47,10 +64,24 @@
     {
         public string? Name { get; set; }
         public double Acres { get; set; }
+        public int UnitID { get; set; }
         public double LastYearAcres { get; set; }
         public double AvgYield { get; set; }
         public double PricePerLb { get; set; }
+        public double PricePerBu { get; set; }
         public double Total { get; set; }
+
+        public void CalculateTotal()
+        {
+            if (UnitID == 1)
+            {
+                Total = Acres * AvgYield * PricePerLb;
+            }
+            else if (UnitID == 2)
+            {
+                Total = Acres * AvgYield * PricePerBu;
+            }
+        }
     }
 
     private List<CommodityData> Commodities;
@@ -61,12 +92,16 @@
         Commodities = commodityList.Select(c => new CommodityData
             {
                 Name = c.Name,
-                // Add other properties if needed
+                UnitID = c.UnitID,
             }).ToList();
     }
 
     private void SaveData()
     {
+        foreach (var commodity in Commodities)
+        {
+            commodity.CalculateTotal();
+        }
         // Save the data to the database
     }
 }

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace farmGate.Shared.Models 
+namespace farmGate.Shared.Models
 {
     public class Commodity
     {
@@ -19,7 +17,10 @@ namespace farmGate.Shared.Models
         [ForeignKey("Category")]
         public int CategoryId { get; set; }  // Foreign key
 
-        public virtual Category? Category { get; set; }  // Navigation property
+        public virtual Category Category { get; set; }  // Navigation property
+
+        public int UnitID { get; set; }  // Foreign Key
+        public Unit Unit { get; set; }  // Navigation Property
     }
 }
 

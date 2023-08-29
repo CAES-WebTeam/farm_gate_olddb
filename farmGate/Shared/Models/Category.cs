@@ -1,14 +1,8 @@
-﻿using farmGate.Shared.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
-namespace farmGate.Shared.Models  
+namespace farmGate.Shared.Models
 {
     public class Category
     {
