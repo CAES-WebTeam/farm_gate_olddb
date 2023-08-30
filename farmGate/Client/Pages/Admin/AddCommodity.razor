@@ -73,17 +73,16 @@
                             <ul>
                                 @foreach (var commodity in commodities.Where(c => c.CategoryId == category.Id))
                                 {
-                                    <li>
-                                        @commodity.Name
-                                        <!-- Add a Delete button next to each commodity -->
-                                        <button class="btn btn-link text-danger" @onclick="() => PromptDeleteCommodity(commodity.Id)">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-
-                                        <button class="btn btn-link text-primary" @onclick="() => PromptEditCommodity(commodity.Id)">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-
+                                    <li class="position-relative">
+                                        <span>@commodity.Name</span>
+                                        <div class="position-absolute" style="bottom: 0; right: 0;">
+                                            <button class="btn btn-link text-danger" @onclick="() => PromptDeleteCommodity(commodity.Id)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                            <button class="btn btn-link text-primary" @onclick="() => PromptEditCommodity(commodity.Id)">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                        </div>
                                     </li>
                                 }
                             </ul>
@@ -94,6 +93,7 @@
         </tbody>
     </table>
 </div>
+
 @code {
     private List<Commodity> commodities;
     private List<Category> categories;
