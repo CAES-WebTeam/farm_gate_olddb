@@ -27,6 +27,28 @@
 </form>
 
 <h2>Current Commodities</h2>
+<!-- Edit Commodity Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Commodity</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your edit form here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" @onclick="() => PromptDeleteCommodity(modalCommodityId)">Delete</button>
+                <button type="button" class="btn btn-primary" @onclick="EditCommodity">Save Changes</button>
+
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -73,12 +95,10 @@
                             <ul>
                                 @foreach (var commodity in commodities.Where(c => c.CategoryId == category.Id))
                                 {
-                                    <li class="position-relative">
+                                    <li class="d-flex justify-content-between">
                                         <span>@commodity.Name</span>
-                                        <div class="position-absolute" style="bottom: 0; right: 0;">
-                                            <button class="btn btn-link text-danger" @onclick="() => PromptDeleteCommodity(commodity.Id)">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                        <div>
+                                            <!-- Removed Delete icon -->
                                             <button class="btn btn-link text-primary" @onclick="() => PromptEditCommodity(commodity.Id)">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
@@ -98,6 +118,7 @@
     private List<Commodity> commodities;
     private List<Category> categories;
     private Commodity newCommodity = new Commodity();
+    private Commodity editCommodity = new Commodity(); // For editing
     private int selectedCategoryId;
     private Dictionary<int, bool> isExpanded = new Dictionary<int, bool>();
     private string modalCommodityName = "";
@@ -106,18 +127,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        commodities = new List<Commodity>(); // Initialize as empty
-        categories = new List<Category>();   // Initialize as empty
+        commodities = new List<Commodity>();
+        categories = new List<Category>();
+        
 
-        Console.WriteLine("Fetching commodities...");
+
         commodities = await commodityService.GetAllCommoditiesAsync();
-        Console.WriteLine($"Fetched {commodities.Count} commodities.");
-
-        Console.WriteLine("Fetching categories...");
         categories = await categoryService.GetCategoriesAsync();
-        Console.WriteLine($"Fetched {categories.Count} categories.");
 
-        // Initialize the isExpanded dictionary
         foreach (var category in categories)
         {
             isExpanded[category.Id] = true;
@@ -134,40 +151,33 @@
         newCommodity.CategoryId = selectedCategoryId;
         var addedCommodity = await commodityService.AddCommodityAsync(newCommodity);
         commodities.Add(addedCommodity);
-        newCommodity = new Commodity(); // Reset the form
+        newCommodity = new Commodity();
     }
-
 
     private async Task PromptDeleteCommodity(int commodityId)
     {
+        await JSRuntime.InvokeVoidAsync("hideModal", "#editModal");
         var commodity = commodities.FirstOrDefault(c => c.Id == commodityId);
         if (commodity != null)
         {
             modalCommodityName = commodity.Name;
             modalCommodityId = commodity.Id;
             modalCategoryName = categories.FirstOrDefault(cat => cat.Id == commodity.CategoryId)?.Name ?? "Unknown";
-
-            // Show the modal
             await JSRuntime.InvokeVoidAsync("showModal", "#deleteModal");
         }
     }
 
     private async Task DeleteCommodity(int commodityId)
     {
-        // Call your service method to delete the commodity from the database.
         var success = await commodityService.DeleteCommodityAsync(commodityId);
-
         if (success)
         {
-            // Remove the commodity from the local list.
             commodities.RemoveAll(c => c.Id == commodityId);
-
-            // Hide the modal
             await JSRuntime.InvokeVoidAsync("hideModal", "#deleteModal");
         }
         else
         {
-            // Handle the error (log it, show an error message, etc.)
+            // Handle error
         }
     }
 
@@ -176,10 +186,29 @@
         var commodity = commodities.FirstOrDefault(c => c.Id == commodityId);
         if (commodity != null)
         {
-            // Your edit logic here
-            // For example, populate a form with the commodity's current details
-            // and show an "Edit Commodity" modal
+            editCommodity = new Commodity
+                {
+                    Id = commodity.Id,
+                    Name = commodity.Name,
+                    CategoryId = commodity.CategoryId
+                };
+            modalCommodityId = commodity.Id;
+            await JSRuntime.InvokeVoidAsync("showModal", "#editModal");
         }
     }
 
+    private async Task EditCommodity()
+    {
+        var updatedCommodity = await commodityService.UpdateCommodityAsync(editCommodity);
+        if (updatedCommodity != null)
+        {
+            var index = commodities.FindIndex(c => c.Id == editCommodity.Id);
+            commodities[index] = updatedCommodity;
+            await JSRuntime.InvokeVoidAsync("hideModal", "#editModal");
+        }
+        else
+        {
+            // Handle error
+        }
+    }
 }

@@ -44,5 +44,22 @@ namespace farmGate.Server.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Commodity> UpdateCommodityAsync(Commodity updatedCommodity)
+        {
+            var existingCommodity = await _context.Commodities.FindAsync(updatedCommodity.Id);
+            if (existingCommodity == null)
+            {
+                return null;
+            }
+
+            existingCommodity.Name = updatedCommodity.Name;
+            existingCommodity.CategoryId = updatedCommodity.CategoryId;
+            // ... update other fields as needed
+
+            await _context.SaveChangesAsync();
+            return existingCommodity;
+        }
+
     }
 }

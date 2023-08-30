@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
+﻿using farmGate.Shared.Models;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
-using farmGate.Shared.Models;
 
 namespace farmGate.Client.Services
 {
@@ -46,6 +43,20 @@ namespace farmGate.Client.Services
         {
             var response = await _httpClient.DeleteAsync($"api/Commodity/{commodityId}");
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<Commodity> UpdateCommodityAsync(Commodity updatedCommodity)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/Commodity/{updatedCommodity.Id}", updatedCommodity);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<Commodity>();
+            }
+            else
+            {
+                // Handle the error (log it, show an error message, etc.)
+                return null;
+            }
         }
 
     }
