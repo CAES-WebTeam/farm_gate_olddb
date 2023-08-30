@@ -7,20 +7,42 @@ namespace farmGate.Shared.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [Column("comm_ID")]
+        public int CommID { get; set; }
 
         [Required]
-        [MaxLength(255)]
-        public string? Name { get; set; }
+        [MaxLength(50)]
+        [Column("commodity")]
+        public string Name { get; set; }
 
+        [MaxLength(100)]
+        [Column("comm_Desc")]
+        public string Description { get; set; }
 
-        [ForeignKey("Category")]
-        public int CategoryId { get; set; }  // Foreign key
+        [Column("cat_ID")]
+        public int CategoryId { get; set; }
 
-        public virtual Category Category { get; set; }  // Navigation property
+        [ForeignKey("CategoryId")]
+        public virtual Category Category { get; set; }
 
-        public int UnitID { get; set; }  // Foreign Key
-        public Unit Unit { get; set; }  // Navigation Property
+        [Column("volUnitID")]
+        public int? VolumeUnitID { get; set; }
+
+        [Column("avgPriceUnitID")]
+        public int? AvgPriceUnitID { get; set; }
+
+        public decimal? Volume { get; set; }
+        public decimal? Multiplier { get; set; }
+        public decimal? NoBatches { get; set; }
+        public decimal? AvgYield { get; set; }
+        public decimal? AvgPrice { get; set; }
+        public int? NoHouses { get; set; }
+        public bool? Active { get; set; }
+
+        [ForeignKey("VolumeUnitID")]
+        public virtual Unit VolumeUnit { get; set; }
+
+        [ForeignKey("AvgPriceUnitID")]
+        public virtual Unit AvgPriceUnit { get; set; }
     }
 }
-

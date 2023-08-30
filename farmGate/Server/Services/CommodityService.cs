@@ -1,6 +1,9 @@
 ﻿using farmGate.Server.Data;
 using farmGate.Shared.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace farmGate.Server.Services
 {
@@ -21,7 +24,7 @@ namespace farmGate.Server.Services
         public async Task<List<Commodity>> GetCommoditiesByCategoryIdAsync(int categoryId)
         {
             return await _context.Commodities.Where(c => c.CategoryId == categoryId)
-                                    .Include(c => c.Unit)
+                                    .Include(c => c.VolumeUnitID)
                                     .ToListAsync();
         }
 
@@ -47,19 +50,27 @@ namespace farmGate.Server.Services
 
         public async Task<Commodity> UpdateCommodityAsync(Commodity updatedCommodity)
         {
-            var existingCommodity = await _context.Commodities.FindAsync(updatedCommodity.Id);
+            var existingCommodity = await _context.Commodities.FindAsync(updatedCommodity.CommID);
             if (existingCommodity == null)
             {
                 return null;
             }
 
-            existingCommodity.Name = updatedCommodity.Name;
+            existingCommodity.Name   = updatedCommodity.Name;
             existingCommodity.CategoryId = updatedCommodity.CategoryId;
-            // ... update other fields as needed
+            existingCommodity.Description = updatedCommodity.Description;
+            existingCommodity.NoHouses = updatedCommodity.NoHouses;
+            existingCommodity.Volume = updatedCommodity.Volume;
+            existingCommodity.VolumeUnitID = updatedCommodity.VolumeUnitID;
+            existingCommodity.Multiplier = updatedCommodity.Multiplier;
+            existingCommodity.NoBatches = updatedCommodity.NoBatches;
+            existingCommodity.AvgYield = updatedCommodity.AvgYield;
+            existingCommodity.AvgPrice = updatedCommodity.AvgPrice;
+            existingCommodity.AvgPriceUnitID = updatedCommodity.AvgPriceUnitID;
+            existingCommodity.Active = updatedCommodity.Active;
 
             await _context.SaveChangesAsync();
             return existingCommodity;
         }
-
     }
 }

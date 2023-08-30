@@ -157,11 +157,11 @@
     private async Task PromptDeleteCommodity(int commodityId)
     {
         await JSRuntime.InvokeVoidAsync("hideModal", "#editModal");
-        var commodity = commodities.FirstOrDefault(c => c.Id == commodityId);
+        var commodity = commodities.FirstOrDefault(c => c.CommID == commodityId);
         if (commodity != null)
         {
             modalCommodityName = commodity.Name;
-            modalCommodityId = commodity.Id;
+            modalCommodityId = commodity.CommID;
             modalCategoryName = categories.FirstOrDefault(cat => cat.Id == commodity.CategoryId)?.Name ?? "Unknown";
             await JSRuntime.InvokeVoidAsync("showModal", "#deleteModal");
         }
@@ -183,16 +183,16 @@
 
     private async Task PromptEditCommodity(int commodityId)
     {
-        var commodity = commodities.FirstOrDefault(c => c.Id == commodityId);
+        var commodity = commodities.FirstOrDefault(c => c.CommID == commodityId);
         if (commodity != null)
         {
             editCommodity = new Commodity
                 {
-                    Id = commodity.Id,
+                    CommID = commodity.CommID,
                     Name = commodity.Name,
                     CategoryId = commodity.CategoryId
                 };
-            modalCommodityId = commodity.Id;
+            modalCommodityId = commodity.CommID;
             await JSRuntime.InvokeVoidAsync("showModal", "#editModal");
         }
     }
@@ -202,7 +202,7 @@
         var updatedCommodity = await commodityService.UpdateCommodityAsync(editCommodity);
         if (updatedCommodity != null)
         {
-            var index = commodities.FindIndex(c => c.Id == editCommodity.Id);
+            var index = commodities.FindIndex(c => c.CommID == editCommodity.CommID);
             commodities[index] = updatedCommodity;
             await JSRuntime.InvokeVoidAsync("hideModal", "#editModal");
         }

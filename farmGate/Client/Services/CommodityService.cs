@@ -47,7 +47,7 @@ namespace farmGate.Client.Services
 
         public async Task<Commodity> UpdateCommodityAsync(Commodity updatedCommodity)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/Commodity/{updatedCommodity.Id}", updatedCommodity);
+            var response = await _httpClient.PutAsJsonAsync($"api/Commodity/{updatedCommodity.CommID}", updatedCommodity);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<Commodity>();
